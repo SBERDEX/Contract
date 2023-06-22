@@ -21,7 +21,7 @@ contract SberDexV3Pool {
         //Current sqrt (P)
         uint160 sqrtPriceX96;
         //Current Tick
-        uint24 tick;
+        int24 tick;
     }
 
     Slot0 public slot0;
@@ -33,4 +33,16 @@ contract SberDexV3Pool {
     mapping(int24 => Tick.Info) public ticks;
     //Position info
     mapping(bytes32 => Position.Info) public position;
+
+    constructor(
+        address token0_,
+        address token1_,
+        uint160 sqrtPriceX96,
+        int24 tick
+    ) {
+        token0 = token0_;
+        token1 = token1_;
+
+        slot0 = Slot0({sqrtPriceX96: sqrtPriceX96, tick: tick});
+    }
 }
