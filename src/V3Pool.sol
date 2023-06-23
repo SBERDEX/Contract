@@ -68,5 +68,6 @@ contract SberDexV3Pool {
             lowerTick,
             upperTick
         );
+        position.update(amount);
     }
 }
