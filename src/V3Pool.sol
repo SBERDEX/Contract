@@ -69,5 +69,10 @@ contract SberDexV3Pool {
             upperTick
         );
         position.update(amount);
+
+        amount0 = 0.998976618347425280 ether;
+        amount1 = 5000 ether;
+
+        liqudity = +uint128(amount);
     }
 }
