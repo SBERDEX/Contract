@@ -6,4 +6,11 @@ library Position {
     struct Info {
         uint128 liqidity;
     }
+
+    function update(Info storage self, uint128 liquidityDelta) internal {
+        uint128 liquidityBefore = self.liqidity;
+        uint128 liquidityAfter = liquidityBefore + liquidityDelta;
+
+        self.liqidity = liquidityAfter;
+    }
 }
