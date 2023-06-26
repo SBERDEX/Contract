@@ -4,7 +4,7 @@ pragma solidity ^0.8.14;
 import "./lib/Tick.sol";
 import "./lib/Position.sol";
 
-contract SberDexV3Pool {
+contract SnowDexV3Pool {
     using Tick for mapping(int24 => Tick.Info);
     using Position for mapping(bytes32 => Position.Info);
     using Position for Position.Info;
