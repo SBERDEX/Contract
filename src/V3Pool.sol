@@ -88,6 +88,16 @@ contract SberDexV3Pool {
             revert InsufficientInputAmount();
         if (amount1 > 0 && balance1Before + amount1 > balance1())
             revert InsufficientInputAmount();
+
+        emit Mint(
+            msg.sender,
+            owner,
+            lowerTick,
+            upperTick,
+            amount,
+            amount0,
+            amount1
+        );
     }
 
     ////////////////////////////////////////////////////////////////////////////
