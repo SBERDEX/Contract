@@ -79,7 +79,7 @@ contract SnowDexV3Pool {
         uint256 balance1Before;
         if (amount0 > 0) balance0Before = balance0();
         if (amount1 > 0) balance1Before = balance1();
-        ISberDexV3MintCallback(msg.sender).sberdexV3MintCallback(
+        ISnowDexV3MintCallback(msg.sender).sberdexV3MintCallback(
             amount0,
             amount1
         );
