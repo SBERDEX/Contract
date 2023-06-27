@@ -3,6 +3,7 @@ pragma solidity ^0.8.14;
 
 import "./lib/Tick.sol";
 import "./lib/Position.sol";
+import "./interfaces/IERC20.sol";
 
 contract SnowDexV3Pool {
     using Tick for mapping(int24 => Tick.Info);
