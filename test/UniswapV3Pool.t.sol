@@ -27,4 +27,29 @@ contract UniswapDexV3PoolTest is Test {
             mintLiquidity: true
         });
     }
+
+    function setupTestCase(
+        TestCaseParams memory params
+    ) internal returns (uint256 poolBalance0, uint256 poolBalance1) {
+        token0.mint(address(this), params.wethBalance);
+        token1.mint(address(this), params.usdcBalance);
+
+        pool = new UniswapV3Pool(
+            address(token0),
+            address(token1),
+            params.currentSqrtP,
+            params.currentTick
+        );
+
+        if (params.mintLiqudity) {
+            (poolBalance0, poolBalance1) = pool.mint(
+                address(this),
+                params.lowerTick,
+                params.upperTick,
+                params.liquidity
+            );
+        }
+
+        shouldTransferInCallback = params.shouldTransferInCallback;
+    }
 }
