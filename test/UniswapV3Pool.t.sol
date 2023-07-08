@@ -52,4 +52,11 @@ contract UniswapDexV3PoolTest is Test {
 
         shouldTransferInCallback = params.shouldTransferInCallback;
     }
+
+    function uniswapV3MintCallback(uint256 amount0, uint256 amount1) public {
+        if (shouldTransferInCallback) {
+            token0.transfer(msg.sender, amount0);
+            token1.transfer(msg.sender, amount1);
+        }
+    }
 }
