@@ -3,11 +3,25 @@ pragma solidity ^0.8.14;
 
 import "../lib/forge-std/src/Test.sol";
 import "./ERC20Mintable.sol";
+import "../src/UniswapDexV3Pool.sol";
 
 contract UniswapDexV3PoolTest is Test {
     ERC20Mintable token0;
     ERC20Mintable token1;
     UniswapV3Pool pool;
+
+    struct TestCaseParams {
+        uint256 wethBalance;
+        uint256 usdcBalance;
+        int24 currentTick;
+        int24 lowerTick;
+        int24 upperTick;
+        uint128 liquidity;
+        uint160 currentSqrtP;
+        bool transferInMintCallback;
+        bool transferInSwapCallback;
+        bool mintLiqudity;
+    }
 
     function setUp() public {
         token0 = new ERC20Mintable("Ether", "ETH", "18");
@@ -15,7 +29,7 @@ contract UniswapDexV3PoolTest is Test {
     }
 
     function testMintSuccess() public {
-        TestCaseParams memory params = TestCaseparams({
+        TestCaseParams memory params = TestCaseParams({
             wethBalance: 1 ether,
             usdcBalance: 5000 ether,
             currentTick: 85176,
@@ -27,6 +41,12 @@ contract UniswapDexV3PoolTest is Test {
             mintLiquidity: true
         });
     }
+
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    // INTERNAL
+    //
+    ////////////////////////////////////////////////////////////////////////////
 
     function setupTestCase(
         TestCaseParams memory params
