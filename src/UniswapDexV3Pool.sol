@@ -6,6 +6,8 @@ import "./lib/Position.sol";
 
 import "./interfaces/IERC20.sol";
 import "./interfaces/IUniswapV3MintCallback.sol";
+import "./interfaces/IUniswapV3SwapCallback.sol";
+
 
 contract UniswapV3Pool {
     using Tick for mapping(int24 => Tick.Info);
@@ -130,8 +132,26 @@ contract UniswapV3Pool {
 
             (slot0.tick, slot0.sqrtPriceX96) = (nextTick, nextPrice);
 
-            IERC20(token0).transfer 
-        
+            IERC20(token0).transfer(recipient, uint256(-amount0));
+
+            uint256 balance1Before = balance1();
+            IUniswapV3SwapCallback(msg.sender).uniswapV3SwapCallback(
+                amount0,
+                amount1
+            );
+
+            if (balance1Before + uint256(amount1) < balance1())
+                revert InsufficientInputAmount();
+
+            emit Swap(
+                msg.sender,
+                recipient,
+                amount0,
+                amount1,
+                slot0.sqrtPriceX96,
+                liquidity,
+                slot0.tick
+            );
         }
 
 
