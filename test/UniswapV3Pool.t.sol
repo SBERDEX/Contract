@@ -28,6 +28,21 @@ contract UniswapDexV3PoolTest is Test {
         token1 = new ERC20Mintable("USDC", "USDC", "18");
     }
 
+    function testSwapBuyEth() public {
+        TestCaseParams memory params = TestCaseParams(){
+            wethBalance: 1 ether,
+            usdcBalance: 5000 ether,
+            currentTick: 85176,
+            lowerTick: 84222,
+            upperTick: 86129,
+            liquidity: 1517882343751509868544,
+            currentSqrtP: 5602277097478614198912276234240,
+            transferInMintCallback: true,
+            transferInSwapCallback: true,
+            mintLiqudity: true
+        };
+    }
+
     function testMintSuccess() public {
         TestCaseParams memory params = TestCaseParams({
             wethBalance: 1 ether,
