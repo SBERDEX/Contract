@@ -123,16 +123,6 @@ contract UniswapDexV3PoolTest is Test {
     //
     ////////////////////////////////////////////////////////////////////////////
 
-    function uniswapV3SwapCallback(int256 amount0, int256 amount1) public {
-        if (amount0 > 0) {
-            token0.transfer(msg.sender, uint256(amount0));
-        }
-
-        if (amount1 > 0) {
-            token1.transfer(msg.sender, uint256(amount0));
-        }
-    }
-
     function uniswapV3SwapCallback(
         int256 amount0,
         int256 amount1,
@@ -159,6 +149,22 @@ contract UniswapDexV3PoolTest is Test {
                     uint256(amount1)
                 );
             }
+        }
+    }
+
+    function uniswapV3MintCallback(
+        uint256 amount0,
+        uint256 amount1,
+        bytes calldata data
+    ) public {
+        if (transferInMintCallback) {
+            UniswapV3Pool.CallbackData memory extra = abi.decode(
+                data,
+                (UniswapV3Pool.CallbackData)
+            );
+
+            IERC20(extra.token0).transferFrom(extra.payer, msg.sender, amount0);
+            IERC20(extra.token1).transferFrom(extra.payer, msg.sender, amount1);
         }
     }
 
