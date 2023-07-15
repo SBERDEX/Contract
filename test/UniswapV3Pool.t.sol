@@ -27,8 +27,8 @@ contract UniswapDexV3PoolTest is Test {
     }
 
     function setUp() public {
-        token0 = new ERC20Mintable("Ether", "ETH", "18");
-        token1 = new ERC20Mintable("USDC", "USDC", "18");
+        token0 = new ERC20Mintable("Ether", "ETH", 18);
+        token1 = new ERC20Mintable("USDC", "USDC", 18);
     }
 
     function testSwapBuyEth() public {
@@ -123,6 +123,13 @@ contract UniswapDexV3PoolTest is Test {
         }
     }
 
+    function uniswapV3MintCallback(uint256 amount0, uint256 amount1) public {
+        if (transferInMintCallback) {
+            token0.transfer(msg.sender, amount0);
+            token1.transfer(msg.sender, amount1);
+        }
+    }
+
     ////////////////////////////////////////////////////////////////////////////
     //
     // INTERNAL
@@ -153,12 +160,5 @@ contract UniswapDexV3PoolTest is Test {
 
         transferInMintCallback = params.transferInMintCallback;
         transferInSwapCallback = params.transferInSwapCallback;
-    }
-
-    function uniswapV3MintCallback(uint256 amount0, uint256 amount1) public {
-        if (transferInMintCallback) {
-            token0.transfer(msg.sender, amount0);
-            token1.transfer(msg.sender, amount1);
-        }
     }
 }
