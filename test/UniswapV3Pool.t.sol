@@ -50,8 +50,18 @@ contract UniswapDexV3PoolTest is Test {
 
         uint256 swapAmount = 42 ether; // 42 USDC
         token1.mint(address(this), swapAmount);
+        token1.approve(address(this), swapAmount);
 
-        (int256 amount0Delta, int256 amount1Delta) = pool.swap(address(this));
+        UniswapV3Pool.CallbackData memory extra = UniswapV3Pool.CallbackData({
+            token0: address(token0),
+            token1: address(token1),
+            payer: address(this)
+        });
+
+        (int256 amount0Delta, int256 amount1Delta) = pool.swap(
+            address(this),
+            abi.encode(extra)
+        );
 
         assertEq(amount0Delta, -0.008396714242162444 ether, "invalid ETH out");
         assertEq(amount1Delta, 42 ether, "invalid USDC in");
@@ -123,10 +133,32 @@ contract UniswapDexV3PoolTest is Test {
         }
     }
 
-    function uniswapV3MintCallback(uint256 amount0, uint256 amount1) public {
-        if (transferInMintCallback) {
-            token0.transfer(msg.sender, amount0);
-            token1.transfer(msg.sender, amount1);
+    function uniswapV3SwapCallback(
+        int256 amount0,
+        int256 amount1,
+        bytes calldata data
+    ) public {
+        if (transferInSwapCallback) {
+            UniswapV3Pool.CallbackData memory extra = abi.decode(
+                data,
+                (UniswapV3Pool.CallbackData)
+            );
+
+            if (amount0 > 0) {
+                IERC20(extra.token0).transferFrom(
+                    extra.payer,
+                    msg.sender,
+                    uint256(amount0)
+                );
+            }
+
+            if (amount1 > 0) {
+                IERC20(extra.token1).transferFrom(
+                    extra.payer,
+                    msg.sender,
+                    uint256(amount1)
+                );
+            }
         }
     }
 
@@ -154,7 +186,8 @@ contract UniswapDexV3PoolTest is Test {
                 address(this),
                 params.lowerTick,
                 params.upperTick,
-                params.liquidity
+                params.liquidity,
+                ""
             );
         }
 
