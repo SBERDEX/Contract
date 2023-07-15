@@ -52,6 +52,12 @@ contract UniswapV3Pool {
         int24 tick;
     }
 
+    struct CallbackData {
+        address token0;
+        address token1;
+        address payer;
+    }
+
     Slot0 public slot0;
 
     //Amount of liquidity, L
