@@ -44,9 +44,7 @@ contract UniswapDexV3PoolTest is Test {
             transferInSwapCallback: true,
             mintLiqudity: true
         });
-
         (uint256 poolBalance0, uint256 poolBalance1) = setupTestCase(params);
-        int256 userBalance0Before = int256(token0.balanceOf(address(this)));
 
         uint256 swapAmount = 42 ether; // 42 USDC
         token1.mint(address(this), swapAmount);
@@ -57,6 +55,8 @@ contract UniswapDexV3PoolTest is Test {
             token1: address(token1),
             payer: address(this)
         });
+
+        int256 userBalance0Before = int256(token0.balanceOf(address(this)));
 
         (int256 amount0Delta, int256 amount1Delta) = pool.swap(
             address(this),
