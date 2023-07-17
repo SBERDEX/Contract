@@ -66,7 +66,7 @@ contract UniswapV3Pool {
     //Ticks info
     mapping(int24 => Tick.Info) public ticks;
     //Position info
-    mapping(bytes32 => Position.Info) public position;
+    mapping(bytes32 => Position.Info) public positions;
 
     constructor(
         address token0_,
@@ -98,7 +98,7 @@ contract UniswapV3Pool {
         ticks.update(lowerTick, amount);
         ticks.update(upperTick, amount);
 
-        Position.Info storage position = position.get(
+        Position.Info storage position = positions.get(
             owner,
             lowerTick,
             upperTick
