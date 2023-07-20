@@ -1,10 +1,12 @@
-**How to Run
-**
+#How to Run
+
 
 . Ensure you have [Foundry](https://github.com/foundry-rs/foundry) installed.
 1. Install the dependencies:
     ```shell
     $ forge install
+    $forge build
+    $forge test
     ```
 1. Run Anvil:
     ```shell
