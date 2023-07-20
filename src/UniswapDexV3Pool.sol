@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
-import "./lib/Tick.sol";
+import "./lib/Math.sol";
 import "./lib/Position.sol";
+import "./lib/SwapMath.sol";
+import "./lib/Tick.sol";
 import "./lib/TickBitmap.sol";
+import "./lib/TickMath.sol";
 
 import "./interfaces/IERC20.sol";
 import "./interfaces/IUniswapV3MintCallback.sol";
