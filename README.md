@@ -1,4 +1,4 @@
-**#How to Run
+**How to Run
 **
 
 . Ensure you have [Foundry](https://github.com/foundry-rs/foundry) installed.
