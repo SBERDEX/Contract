@@ -7,6 +7,7 @@ import "./lib/SwapMath.sol";
 import "./lib/Tick.sol";
 import "./lib/TickBitmap.sol";
 import "./lib/TickMath.sol";
+import "./lib/LiquidityMath.sol";
 
 import "./interfaces/IERC20.sol";
 import "./interfaces/IUniswapV3MintCallback.sol";
@@ -110,14 +111,14 @@ contract UniswapV3Pool {
     ) external returns (uint256 amount0, uint256 amount1) {
         if (
             lowerTick >= upperTick ||
-            lowerTick < MIN_TICK ||
-            upperTick > MAX_TICK
+            lowerTick < TickMath.MIN_TICK ||
+            upperTick > TickMath.MAX_TICK
         ) revert InvalidTickRange();
 
         if (amount == 0) revert ZeroLiquidity();
 
-        bool flippedLower = ticks.update(lowerTick, amount);
-        bool flippedUpper = ticks.update(upperTick, amount);
+        bool flippedLower = ticks.update(lowerTick, int128(amount), false);
+        bool flippedUpper = ticks.update(upperTick, int128(amount), true);
 
         if (flippedLower) {
             tickBitmap.flipTick(lowerTick, 1);
@@ -136,19 +137,33 @@ contract UniswapV3Pool {
 
         Slot0 memory slot0_ = slot0;
 
-        amount0 = Math.calcAmount0Delta(
-            TickMath.getSqrtRatioAtTick(slot0_.tick),
-            TickMath.getSqrtRatioAtTick(upperTick),
-            amount
-        );
+        if (slot0_.tick < lowerTick) {
+            amount0 = Math.calcAmount0Delta(
+                TickMath.getSqrtRatioAtTick(lowerTick),
+                TickMath.getSqrtRatioAtTick(upperTick),
+                amount
+            );
+        } else if (slot0_.tick < upperTick) {
+            amount0 = Math.calcAmount0Delta(
+                slot0_.sqrtPriceX96,
+                TickMath.getSqrtRatioAtTick(upperTick),
+                amount
+            );
 
-        amount1 = Math.calcAmount1Delta(
-            TickMath.getSqrtRatioAtTick(slot0_.tick),
-            TickMath.getSqrtRatioAtTick(lowerTick),
-            amount
-        );
+            amount1 = Math.calcAmount1Delta(
+                slot0_.sqrtPriceX96,
+                TickMath.getSqrtRatioAtTick(lowerTick),
+                amount
+            );
 
-        liquidity += uint128(amount);
+            liquidity = LiquidityMath.addLiquidity(liquidity, int128(amount)); // TODO: amount is negative when removing liquidity
+        } else {
+            amount1 = Math.calcAmount1Delta(
+                TickMath.getSqrtRatioAtTick(lowerTick),
+                TickMath.getSqrtRatioAtTick(upperTick),
+                amount
+            );
+        }
 
         uint256 balance0Before;
         uint256 balance1Before;
@@ -159,7 +174,6 @@ contract UniswapV3Pool {
             amount1,
             data
         );
-
         if (amount0 > 0 && balance0Before + amount0 > balance0())
             revert InsufficientInputAmount();
         if (amount1 > 0 && balance1Before + amount1 > balance1())
