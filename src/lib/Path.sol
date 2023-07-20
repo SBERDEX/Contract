@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.14;
 
-import "bytes-utils/BytesLib.sol";
+import "../../lib/solidity-bytes-utils/contracts/BytesLib.sol";
 
 library BytesLibExt {
     function toUint24(
