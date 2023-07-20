@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.14;
 
-import "openzeppelin/utils/Base64.sol";
-import "openzeppelin/utils/Strings.sol";
+import "../../lib/openzeppelin/Base65.sol";
+import "../../lib/openzeppelin/String.sol";
 
 import "../interfaces/IERC20.sol";
 import "../interfaces/IUniswapV3Pool.sol";
